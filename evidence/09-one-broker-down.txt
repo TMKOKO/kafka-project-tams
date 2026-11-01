@@ -1,0 +1,18 @@
+--- Deleting kafka-2 while 600 journeys run at 20/s
+pod "kafka-2" deleted from default namespace
+--- Under-replicated partitions while it is down (first 4 lines, then count)
+	Topic: payments.events.v1	Partition: 0	Leader: 1	Replicas: 1,2,0	Isr: 1,0
+	Topic: payments.events.v1	Partition: 1	Leader: 0	Replicas: 2,0,1	Isr: 1,0
+	Topic: payments.events.v1	Partition: 2	Leader: 0	Replicas: 0,1,2	Isr: 1,0
+	Topic: payments.events.v1	Partition: 3	Leader: 1	Replicas: 1,2,0	Isr: 1,0
+payments.events.v1 under-replicated partitions: 100
+--- Simulation result
+{"journeysRequested":600,"seed":101,"ratePerSec":20,"eventsAcknowledged":2275,"journeysUnsent":0,"outcomes":{"COMPLETED":505,"NOT_AUTHORISED":51,"INVALIDATED":23,"NOT_COMPLETED":21},"durationMs":30101}
+partitioned roll out complete: 3 new pods have been updated...
+pod/kafka-0 condition met
+pod/kafka-1 condition met
+pod/kafka-2 condition met
+No under-replicated partitions after 5s
+Events acknowledged: 2275. Records added to the topic: 2275
+All groups at zero lag after 16s
+{"payments":6474,"events":24332,"endings":{"PAYMENT_NOT_AUTHORISED":498,"PAYMENT_INVALIDATED":372,"PAYMENT_COMPLETED":5283,"PAYMENT_NOT_COMPLETED":221},"inProgress":100,"violationCount":0,"violations":[],"fraudEvents":{"FRAUD_SCORE_HIGH":28,"FRAUD_SCORE_LOW":5924,"FRAUD_SCORE_MEDIUM":584}}

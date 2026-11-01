@@ -1,0 +1,35 @@
+--- Topic totals
+payments.events.v1 records: 26601
+fraud.scores.v1 records: 7141
+notifications.events.v1 records: 7252
+fraud-scoring-group.dlq records: 1
+notification-sender-group.dlq records: 1
+audit-archiver-group.dlq records: 1
+notifications.events.v1 consumed: 7252, unique eventIds: 7252
+fraud.scores.v1 consumed: 7141, unique eventIds: 7079
+--- Audit archive
+33741 /data/audit/audit-log.jsonl
+{"payments":7079,"events":26600,"endings":{"PAYMENT_NOT_AUTHORISED":555,"PAYMENT_INVALIDATED":410,"PAYMENT_COMPLETED":5769,"PAYMENT_NOT_COMPLETED":245},"inProgress":100,"violationCount":0,"violations":[],"fraudEvents":{"FRAUD_SCORE_HIGH":32,"FRAUD_SCORE_LOW":6486,"FRAUD_SCORE_MEDIUM":623}}
+--- Consumer groups
+
+GROUP                                                     COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE           #MEMBERS
+fraud-scoring-group                                       kafka-2.kafka-headless.default.svc.cluster.local:9092 (2) cooperative-sticky   Stable          2
+fraud-scoring-group total lag: 0
+
+GROUP                                                     COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE           #MEMBERS
+notification-sender-group                                 kafka-0.kafka-headless.default.svc.cluster.local:9092 (0) cooperative-sticky   Stable          2
+notification-sender-group total lag: 0
+
+GROUP                                                     COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE           #MEMBERS
+audit-archiver-group                                      kafka-0.kafka-headless.default.svc.cluster.local:9092 (0) cooperative-sticky   Stable          1
+audit-archiver-group total lag: 0
+--- Pods
+audit-service-75d6c69d78-chnk6 1/1 Running 0
+fraud-service-84bc47884b-hxr8j 1/1 Running 0
+fraud-service-84bc47884b-qkpfr 1/1 Running 0
+kafka-0 1/1 Running 0
+kafka-1 1/1 Running 0
+kafka-2 1/1 Running 0
+notification-service-98c7cdd64-n6fx8 1/1 Running 0
+notification-service-98c7cdd64-wzq8t 1/1 Running 0
+payment-service-69b5d47486-98vgj 1/1 Running 0

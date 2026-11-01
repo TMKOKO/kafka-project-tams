@@ -1,0 +1,35 @@
+=================== payment.md
+--- topic command (real topic name swapped for template.test.payment)
+Created topic template.test.payment.
+Dynamic configs for topic template.test.payment are:
+Topic: template.test.payment	TopicId: keI8d0qSQnGBxQc5qBjLUQ	PartitionCount: 100	ReplicationFactor: 3	Configs: compression.type=lz4,min.insync.replicas=2,cleanup.policy=delete,retention.ms=220924800000,max.message.bytes=1048576,retention.bytes=-1
+--- producer command
+producer exit status: 0
+--- consumer command (added --max-messages 1 --timeout-ms 30000 so it stops by itself)
+template-key	template-value
+Processed a total of 1 messages
+=================== fraud.md
+--- topic command (real topic name swapped for template.test.fraud)
+Created topic template.test.fraud.
+Dynamic configs for topic template.test.fraud are:
+Topic: template.test.fraud	TopicId: 3OvBkWY0QLWq9jNkyPWR7w	PartitionCount: 30	ReplicationFactor: 3	Configs: compression.type=lz4,min.insync.replicas=2,cleanup.policy=delete,retention.ms=220924800000,max.message.bytes=1048576,retention.bytes=-1
+--- producer command
+producer exit status: 0
+--- consumer command (added --max-messages 1 --timeout-ms 30000 so it stops by itself)
+template-key	template-value
+Processed a total of 1 messages
+=================== notification.md
+--- topic command (real topic name swapped for template.test.notification)
+Created topic template.test.notification.
+Dynamic configs for topic template.test.notification are:
+Topic: template.test.notification	TopicId: XgtstioYRAu92j1d1d2Hwg	PartitionCount: 30	ReplicationFactor: 3	Configs: compression.type=lz4,min.insync.replicas=2,cleanup.policy=delete,retention.ms=2592000000,max.message.bytes=1048576,retention.bytes=-1
+--- producer command
+producer exit status: 0
+--- consumer command (added --max-messages 1 --timeout-ms 30000 so it stops by itself)
+template-key	template-value
+Processed a total of 1 messages
+=================== cleanup
+* Group 'template-test-payments-events-console' could not be deleted due to: java.util.concurrent.ExecutionException: or
+* Group 'template-test-fraud-scores-console' could not be deleted due to: java.util.concurrent.ExecutionException: org.a
+* Group 'template-test-notifications-console' could not be deleted due to: java.util.concurrent.ExecutionException: org.
+__consumer_offsets audit-archiver-group.dlq fraud-scoring-group.dlq fraud.scores.v1 notification-sender-group.dlq notifications.events.v1 payments.events.v1 

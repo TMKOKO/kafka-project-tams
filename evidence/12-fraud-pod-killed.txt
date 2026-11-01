@@ -1,0 +1,14 @@
+--- Deleting pod/fraud-service-84bc47884b-7fjn7 while 600 journeys run at 20/s
+pod "fraud-service-84bc47884b-7fjn7" deleted from default namespace
+
+GROUP                                                     COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE           #MEMBERS
+fraud-scoring-group                                       kafka-0.kafka-headless.default.svc.cluster.local:9092 (0) cooperative-sticky   Stable          1
+{"journeysRequested":600,"seed":102,"ratePerSec":20,"eventsAcknowledged":2251,"journeysUnsent":0,"outcomes":{"COMPLETED":484,"NOT_AUTHORISED":56,"INVALIDATED":37,"NOT_COMPLETED":23},"durationMs":34276}
+deployment "fraud-service" successfully rolled out
+All groups at zero lag after 15s
+
+GROUP                                                     COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE           #MEMBERS
+fraud-scoring-group                                       kafka-0.kafka-headless.default.svc.cluster.local:9092 (0) cooperative-sticky   Stable          2
+--- Scores against payments, across everything run so far
+fraud.scores.v1 records: 7141, unique eventIds: 7079
+{"payments":7079,"events":26600,"endings":{"PAYMENT_NOT_AUTHORISED":555,"PAYMENT_INVALIDATED":410,"PAYMENT_COMPLETED":5769,"PAYMENT_NOT_COMPLETED":245},"inProgress":100,"violationCount":0,"violations":[],"fraudEvents":{"FRAUD_SCORE_HIGH":32,"FRAUD_SCORE_LOW":6486,"FRAUD_SCORE_MEDIUM":623}}

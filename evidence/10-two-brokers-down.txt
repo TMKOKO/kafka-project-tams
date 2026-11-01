@@ -1,0 +1,23 @@
+--- Scaling to 1 broker, which leaves one of three replicas and one of three controller voters
+statefulset.apps/kafka scaled
+pod/kafka-1 condition met
+--- One payment request while only kafka-0 is running
+{"error":"Payment c4f013bc-419d-4627-9f8f-d4c56bdc0f12 unsent at PAYMENT_INITIATED"}
+HTTP 503 after 30.277409s
+--- What the producer logged
+2026-11-01T12:30:11.348Z ERROR 1 --- [payment-service] [cat-handler-240] c.bank.payments.payment.JourneyService   : UNSENT type=PAYMENT_INITIATED paymentId=c4f013bc-419d-4627-9f8f-d4c56bdc0f12 error=java.util.concurrent.CompletionException: org.springframework.kafka.core.KafkaProducerException: Failed to send
+--- Consumer behaviour during the outage (counts of warnings in the last 70s)
+fraud warnings: 0
+--- Restoring brokers
+statefulset.apps/kafka scaled
+partitioned roll out complete: 3 new pods have been updated...
+pod/kafka-0 condition met
+pod/kafka-1 condition met
+pod/kafka-2 condition met
+No under-replicated partitions after 5s
+--- A new payment after recovery
+{"paymentId":"970f2140-e80f-40a7-bf8f-0ae408c3a095","outcome":"COMPLETED","events":[{"eventType":"PAYMENT_INITIATED","partition":38,"offset":191},{"eventType":"PAYMENT_AUTHORISED","partition":38,"offset":192},{"eventType":"PAYMENT_VALIDATED","partition":38,"offset":193},{"eventType":"PAYMENT_COMPLETED","partition":38,"offset":194}]}
+HTTP 200 after 0.191631s
+Records added across the outage and recovery: 4
+All groups at zero lag after 12s
+{"payments":6475,"events":24336,"endings":{"PAYMENT_NOT_AUTHORISED":498,"PAYMENT_INVALIDATED":372,"PAYMENT_COMPLETED":5284,"PAYMENT_NOT_COMPLETED":221},"inProgress":100,"violationCount":0,"violations":[],"fraudEvents":{"FRAUD_SCORE_HIGH":28,"FRAUD_SCORE_LOW":5925,"FRAUD_SCORE_MEDIUM":584}}

@@ -1,0 +1,11 @@
+--- Sending a malformed record using the console producer with the payment settings
+--- Sending valid journeys straight after it
+"outcome":"COMPLETED" "outcome":"NOT_AUTHORISED" "outcome":"INVALIDATED" "outcome":"NOT_COMPLETED" 
+All groups at zero lag after 10s
+--- fraud-scoring-group.dlq
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 5]	poison-1	this is not json
+--- notification-sender-group.dlq
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 5]	poison-1	this is not json
+--- audit-archiver-group.dlq
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 5]	poison-1	this is not json
+{"payments":6479,"events":24349,"endings":{"PAYMENT_NOT_AUTHORISED":499,"PAYMENT_INVALIDATED":373,"PAYMENT_COMPLETED":5285,"PAYMENT_NOT_COMPLETED":222},"inProgress":100,"violationCount":0,"violations":[],"fraudEvents":{"FRAUD_SCORE_HIGH":29,"FRAUD_SCORE_LOW":5927,"FRAUD_SCORE_MEDIUM":585}}
