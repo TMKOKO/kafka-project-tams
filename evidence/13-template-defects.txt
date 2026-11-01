@@ -1,0 +1,28 @@
+--- A: bash, a space after the line-continuation backslash
+first  
+.t.sh: line 2: --second: command not found
+
+--- B: --config retention.ms= 123 (space after =)
+Error while executing topic command : requirement failed: Invalid topic config: all configs to be added must be in the format "key=val".
+[2026-11-01 12:26:57,399] ERROR java.lang.IllegalArgumentException: requirement failed: Invalid topic config: all configs to be added must be in the format "key=val".
+ (org.apache.kafka.tools.TopicCommand)
+
+--- C: template console consumer, client settings through --property. Session timeout set to an illegal 1ms
+Partition:58	{"eventId":"efef0310-800f-47d9-bb66-75e890bf7899","schemaVersion":1,"eventType":"PAYMENT_INITIATED","paymentId":"49aee3fb-655a-
+Processed a total of 1 messages
+
+--- D: same illegal value through --consumer-property
+[2026-11-01 12:27:08,602] ERROR Unknown error when running consumer:  (kafka.tools.ConsoleConsumer$)
+Caused by: java.lang.IllegalArgumentException: Heartbeat must be set lower than the session timeout
+
+--- E: print.key vs parse.key on the console consumer
+{"eventId":"a5c7a283-bdb4-45e4-9757-9a4a4c56e65e","schemaVer
+(above: parse.key=true)
+3ce95ecb-5ed5-432d-bed6-58e5051f5540	{"eventId":"a5c7a283-bd
+(above: print.key=true)
+
+--- F: template producer, acks through --property, with an illegal acks value
+exit=0
+
+--- G: same illegal value through --producer-property
+org.apache.kafka.common.config.ConfigException: Invalid value banana for configuration acks: String must be one of: all, -1, 0, 1

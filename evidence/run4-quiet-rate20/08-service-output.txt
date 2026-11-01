@@ -1,0 +1,42 @@
+--- fraud-service
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:37.491Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=a3720e10-182b-40a9-8888-b88c5f3bc0d2 score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:37.540Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=f4c37e48-47d6-49c2-8210-e30441f43001 score=25 type=FRAUD_SCORE_LOW reasons=[LARGE_AMOUNT
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:37.589Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=75955c2e-70c9-4c40-97cf-0257fbb8809f score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:37.688Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=0ef20113-3002-4c4e-b3f5-24c05b2252d2 score=15 type=FRAUD_SCORE_LOW reasons=[UNKNOWN_DEVI
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:37.838Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=55202ddc-70b6-40fa-b491-8f86fefce633 score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:38.037Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=03f755f8-a396-4978-b121-91fb643ac134 score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-7fjn7/app] 2026-11-01T12:20:38.090Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=cd05583a-c536-412a-99b2-a18c87cb665b score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.439Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=0847110b-aab0-48b1-b060-a1d9e66ca644 score=50 type=FRAUD_SCORE_MEDIUM reasons=[VERY_LARG
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.639Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=d76821f4-fb36-40d2-b1bc-8086dfcef043 score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.737Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=2b592e3a-28d6-4274-a847-1547b695cfff score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.790Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=0404ee19-f694-44d2-8121-543a18d74c20 score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.889Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=e0fb10aa-c260-418d-afd3-9731b13dced2 score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.940Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=40b84307-1819-47b0-b588-173dd04127c1 score=25 type=FRAUD_SCORE_LOW reasons=[LARGE_AMOUNT
+[pod/fraud-service-84bc47884b-qkpfr/app] 2026-11-01T12:20:37.988Z  INFO 1 --- [fraud-service] [ntainer#0-0-C-1] com.bank.payments.fraud.FraudListener    : SCORED paymentId=e5b5a254-3ef3-4929-940a-217bcfca06fd score=0 type=FRAUD_SCORE_LOW reasons=[] from=paymen
+--- notification-service
+[pod/notification-service-98c7cdd64-n6fx8/app] 2026-11-01T12:20:38.065Z  INFO 1 --- [notification-service] [ntainer#0-0-C-1] c.bank.payments.notification.MockSender  : NOTIFIED customerId=cust-361 paymentId=03f755f8-a396-4978-b121-91fb643ac134 attempt=1 messag
+[pod/notification-service-98c7cdd64-n6fx8/app] 2026-11-01T12:20:38.119Z  INFO 1 --- [notification-service] [ntainer#0-0-C-1] c.bank.payments.notification.MockSender  : NOTIFIED customerId=cust-3186 paymentId=cd05583a-c536-412a-99b2-a18c87cb665b attempt=1 messa
+--- audit-service
+[pod/audit-service-75d6c69d78-chnk6/app] 2026-11-01T12:20:38.392Z  INFO 1 --- [audit-service] [ntainer#0-0-C-1] com.bank.payments.audit.AuditListener    : ARCHIVED count=20
+[pod/audit-service-75d6c69d78-chnk6/app] 2026-11-01T12:20:38.568Z  INFO 1 --- [audit-service] [ntainer#0-0-C-1] com.bank.payments.audit.AuditListener    : ARCHIVED count=3
+--- payment-service
+2026-11-01T12:20:11.704Z  INFO 1 --- [payment-service] [    virtual-751] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_AUTHORISED paymentId=bbacaef1-84a4-42df-ba18-b1bacb7276da partition=52 offset=196
+2026-11-01T12:20:11.714Z  INFO 1 --- [payment-service] [    virtual-751] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_VALIDATED paymentId=bbacaef1-84a4-42df-ba18-b1bacb7276da partition=52 offset=197
+2026-11-01T12:20:11.726Z  INFO 1 --- [payment-service] [    virtual-751] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_COMPLETED paymentId=bbacaef1-84a4-42df-ba18-b1bacb7276da partition=52 offset=198
+2026-11-01T12:20:11.739Z  INFO 1 --- [payment-service] [    virtual-752] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_INITIATED paymentId=e985861d-f297-4d92-a537-751747e5b35a partition=44 offset=188
+2026-11-01T12:20:11.752Z  INFO 1 --- [payment-service] [    virtual-752] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_AUTHORISED paymentId=e985861d-f297-4d92-a537-751747e5b35a partition=44 offset=189
+2026-11-01T12:20:11.764Z  INFO 1 --- [payment-service] [    virtual-752] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_VALIDATED paymentId=e985861d-f297-4d92-a537-751747e5b35a partition=44 offset=190
+2026-11-01T12:20:11.777Z  INFO 1 --- [payment-service] [    virtual-752] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_COMPLETED paymentId=e985861d-f297-4d92-a537-751747e5b35a partition=44 offset=191
+2026-11-01T12:20:11.790Z  INFO 1 --- [payment-service] [    virtual-753] c.bank.payments.payment.JourneyService   : SENT type=PAYMENT_INITIATED paymentId=2f45db99-409b-4afa-bbc9-494ec83621bf partition=30 offset=133
+
+--- Fraud levels and notification records
+notifications.events.v1 total records: 4861
+fraud.scores.v1 total records: 4832
+payments.events.v1 total records: 17876
+
+--- Sample of fraud.scores.v1 using a console consumer in its own group
+Partition:12	Offset:0	17292978-ed73-4f78-be4f-651c9807b4b9	{"eventId":"057bec83-07f0-3d69-9663-0d6c75625955","schemaVersion":1,"eventType":"FRAUD_SCORE_LOW","paymentId":"17292978-ed73-4f78-be4f-651c9807b4b9","customerId":"cust-1","score":0,"reasons":[],"occurredAt":"2026-11-01T11:32:28.199822822Z","correlationId":"fa734f6a-849f-4757-9e92-ef03a093fcc3","causationId":"ae28942a-7faa-4777-888b-8ba31a811995"}
+Partition:12	Offset:1	501a2df3-c479-48f5-99f5-ca6d6816c04e	{"eventId":"d213f80d-fbb2-32fa-8c34-fec9769cf254","schemaVersion":1,"eventType":"FRAUD_SCORE_LOW","paymentId":"501a2df3-c479-48f5-99f5-ca6d6816c04e","customerId":"cust-4379","score":0,"reasons":[],"occurredAt":"2026-11-01T11:32:29.328338529Z","correlationId":"8fb796b8-aff0-4ba3-b43d-5112b94ce394","causationId":"623b3a24-361e-4b1a-87c9-33ee008ab29e"}
+--- Sample of notifications.events.v1 using a console consumer in its own group
+Partition:14	Offset:2	4a5601b8-7711-46dc-94a7-70d91a4f10a4	{"eventId":"d1797de9-2569-3266-91c9-dd6b6ad5e0d8","schemaVersion":1,"eventType":"NOTIFICATION_PAYMENT_APPROVED","paymentId":"4a5601b8-7711-46dc-94a7-70d91a4f10a4","customerId":"cust-813","deliveryChannel":"PUSH","message":"Your payment was approved.","occurredAt":"2026-11-01T11:32:31.740212267Z","correlationId":"4dee7b02-701d-40bb-8759-737548f774db","causationId":"ced955e0-8e45-4c47-b8ff-98d936091729"}
+Partition:14	Offset:3	57aec51b-a4d1-4713-ae51-e395d812d6a6	{"eventId":"a5564ce4-b3a5-3096-8af8-6f6ab3fb0965","schemaVersion":1,"eventType":"NOTIFICATION_PAYMENT_APPROVED","paymentId":"57aec51b-a4d1-4713-ae51-e395d812d6a6","customerId":"cust-455","deliveryChannel":"SMS","message":"Your payment was approved.","occurredAt":"2026-11-01T11:32:32.067689114Z","correlationId":"8a776264-0c54-4752-b5f5-b863a85f9f44","causationId":"9b5ce971-9875-4e16-aa6d-164f6fa83cd3"}

@@ -1,0 +1,1 @@
+{"journeysRequested":1000,"seed":42,"ratePerSec":20,"eventsAcknowledged":3070,"journeysUnsent":187,"outcomes":{"COMPLETED":666,"NOT_AUTHORISED":64,"INVALIDATED":54,"NOT_COMPLETED":29},"durationMs":53053}Records added to payments.events.v1: 3367

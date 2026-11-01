@@ -1,0 +1,21 @@
+NAME                                   READY   STATUS    RESTARTS   AGE     IP          NODE             NOMINATED NODE   READINESS GATES
+audit-service-75d6c69d78-chnk6         1/1     Running   0          9m15s   10.1.0.23   docker-desktop   <none>           <none>
+fraud-service-84bc47884b-7fjn7         1/1     Running   0          9m16s   10.1.0.22   docker-desktop   <none>           <none>
+fraud-service-84bc47884b-qkpfr         1/1     Running   0          9m16s   10.1.0.21   docker-desktop   <none>           <none>
+kafka-0                                1/1     Running   0          2m31s   10.1.0.26   docker-desktop   <none>           <none>
+kafka-1                                1/1     Running   0          3m31s   10.1.0.25   docker-desktop   <none>           <none>
+kafka-2                                1/1     Running   0          4m26s   10.1.0.24   docker-desktop   <none>           <none>
+notification-service-98c7cdd64-n6fx8   1/1     Running   0          9m15s   10.1.0.19   docker-desktop   <none>           <none>
+notification-service-98c7cdd64-wzq8t   1/1     Running   0          9m15s   10.1.0.18   docker-desktop   <none>           <none>
+payment-service-69b5d47486-98vgj       1/1     Running   0          9m16s   10.1.0.20   docker-desktop   <none>           <none>
+
+ClusterId:              q1Sh-9_ISia_zwGINzRvyQ
+LeaderId:               1
+LeaderEpoch:            235
+HighWatermark:          10745
+MaxFollowerLag:         0
+MaxFollowerLagTimeMs:   338
+CurrentVoters:          [0,1,2]
+CurrentObservers:       []
+
+7.7.1-ccs

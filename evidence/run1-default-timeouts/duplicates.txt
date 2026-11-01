@@ -1,0 +1,4 @@
+fraud.scores.v1 records=1573 uniqueEventIds=1519
+kafka-0 controller elections with default timeouts: 97
+kafka-1 controller elections with default timeouts: 116
+kafka-2 controller elections with default timeouts: 109

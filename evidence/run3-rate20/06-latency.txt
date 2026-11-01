@@ -1,0 +1,12 @@
+Payment producer, target 150ms (event created to Kafka acknowledgement)
+{"producer-ack":{"count":3254,"p50Ms":393.67,"p95Ms":9362.354,"p99Ms":29895.657,"maxMs":33419.808}}
+pod/fraud-service-84bc47884b-pjw2n (event created to consumer processing)
+{"consumer-lag":{"count":440,"p50Ms":3132.092,"p95Ms":17388.105,"p99Ms":20202.228,"maxMs":32349.148}}
+pod/fraud-service-84bc47884b-rwftt (event created to consumer processing)
+{"consumer-lag":{"count":511,"p50Ms":4896.033,"p95Ms":29391.263,"p99Ms":31286.053,"maxMs":34139.92}}
+pod/notification-service-98c7cdd64-82nd2 (event created to consumer processing)
+{"consumer-lag":{"count":466,"p50Ms":2369.613,"p95Ms":12222.348,"p99Ms":15715.705,"maxMs":30814.84}}
+pod/notification-service-98c7cdd64-x2tj4 (event created to consumer processing)
+{"consumer-lag":{"count":435,"p50Ms":2079.882,"p95Ms":14433.183,"p99Ms":20591.44,"maxMs":30059.732}}
+pod/audit-service-75d6c69d78-wzs7v (event created to consumer processing)
+{"consumer-lag":{"count":4331,"p50Ms":898.176,"p95Ms":12226.743,"p99Ms":30151.734,"maxMs":30662.463}}
