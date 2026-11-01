@@ -1,0 +1,5 @@
+**/target
+evidence
+k8s
+scripts
+*.md

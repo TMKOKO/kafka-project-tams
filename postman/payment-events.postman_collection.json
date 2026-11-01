@@ -1,0 +1,379 @@
+{
+  "info": {
+    "name": "Kafka Payment Events POC",
+    "description": "Tests the payment and audit services. First run:\n\nkubectl port-forward svc/payment-service 8081:8080\nkubectl port-forward svc/audit-service 8082:8080\n\nThe Create payment requests save the returned paymentId to the paymentId variable, which the Audit requests then use. Edit values in the collection's Variables tab.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "paymentsBaseUrl", "value": "http://localhost:8081", "type": "string" },
+    { "key": "auditBaseUrl", "value": "http://localhost:8082", "type": "string" },
+    { "key": "customerId", "value": "cust-1", "type": "string" },
+    { "key": "accountId", "value": "acc-1", "type": "string" },
+    { "key": "merchantId", "value": "merch-1", "type": "string" },
+    { "key": "amountMinor", "value": "25000", "type": "string" },
+    { "key": "highRiskAmountMinor", "value": "7500000", "type": "string" },
+    { "key": "currency", "value": "ZAR", "type": "string" },
+    { "key": "channel", "value": "MOBILE", "type": "string" },
+    { "key": "paymentType", "value": "CARD", "type": "string" },
+    { "key": "deviceId", "value": "device-1", "type": "string" },
+    { "key": "ipCountry", "value": "ZA", "type": "string" },
+    { "key": "highRiskCountry", "value": "RU", "type": "string" },
+    { "key": "simulateCount", "value": "100", "type": "string" },
+    { "key": "simulateSeed", "value": "42", "type": "string" },
+    { "key": "simulateRatePerSec", "value": "100", "type": "string" },
+    { "key": "paymentId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create payment - COMPLETED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('paymentId', body.paymentId);",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('journey has 4 events ending in COMPLETED', () => {",
+                  "  pm.expect(body.events.map(e => e.eventType)).to.eql(['PAYMENT_INITIATED', 'PAYMENT_AUTHORISED', 'PAYMENT_VALIDATED', 'PAYMENT_COMPLETED']);",
+                  "});",
+                  "pm.test('all events share one partition', () => {",
+                  "  pm.expect(new Set(body.events.map(e => e.partition)).size).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"accountId\": \"{{accountId}}\",\n  \"merchantId\": \"{{merchantId}}\",\n  \"amountMinor\": {{amountMinor}},\n  \"currency\": \"{{currency}}\",\n  \"channel\": \"{{channel}}\",\n  \"paymentType\": \"{{paymentType}}\",\n  \"deviceId\": \"{{deviceId}}\",\n  \"ipCountry\": \"{{ipCountry}}\",\n  \"outcome\": \"COMPLETED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{paymentsBaseUrl}}/payments", "host": ["{{paymentsBaseUrl}}"], "path": ["payments"] },
+            "description": "Normal payment that should score FRAUD_SCORE_LOW and send an approved notification."
+          }
+        },
+        {
+          "name": "Create payment - NOT_AUTHORISED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('paymentId', body.paymentId);",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('journey stops at NOT_AUTHORISED', () => {",
+                  "  pm.expect(body.events.map(e => e.eventType)).to.eql(['PAYMENT_INITIATED', 'PAYMENT_NOT_AUTHORISED']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"accountId\": \"{{accountId}}\",\n  \"merchantId\": \"{{merchantId}}\",\n  \"amountMinor\": {{amountMinor}},\n  \"currency\": \"{{currency}}\",\n  \"channel\": \"{{channel}}\",\n  \"paymentType\": \"{{paymentType}}\",\n  \"deviceId\": \"{{deviceId}}\",\n  \"ipCountry\": \"{{ipCountry}}\",\n  \"outcome\": \"NOT_AUTHORISED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{paymentsBaseUrl}}/payments", "host": ["{{paymentsBaseUrl}}"], "path": ["payments"] },
+            "description": "Fails at authorisation, so a failed notification should be sent."
+          }
+        },
+        {
+          "name": "Create payment - INVALIDATED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('paymentId', body.paymentId);",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('journey stops at INVALIDATED', () => {",
+                  "  pm.expect(body.events.map(e => e.eventType)).to.eql(['PAYMENT_INITIATED', 'PAYMENT_AUTHORISED', 'PAYMENT_INVALIDATED']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"accountId\": \"{{accountId}}\",\n  \"merchantId\": \"{{merchantId}}\",\n  \"amountMinor\": {{amountMinor}},\n  \"currency\": \"{{currency}}\",\n  \"channel\": \"{{channel}}\",\n  \"paymentType\": \"{{paymentType}}\",\n  \"deviceId\": \"{{deviceId}}\",\n  \"ipCountry\": \"{{ipCountry}}\",\n  \"outcome\": \"INVALIDATED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{paymentsBaseUrl}}/payments", "host": ["{{paymentsBaseUrl}}"], "path": ["payments"] },
+            "description": "Fails at validation, so a failed notification should be sent."
+          }
+        },
+        {
+          "name": "Create payment - NOT_COMPLETED, high fraud risk",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('paymentId', body.paymentId);",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('journey ends at NOT_COMPLETED', () => {",
+                  "  pm.expect(body.events.map(e => e.eventType)).to.eql(['PAYMENT_INITIATED', 'PAYMENT_AUTHORISED', 'PAYMENT_VALIDATED', 'PAYMENT_NOT_COMPLETED']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"accountId\": \"{{accountId}}\",\n  \"merchantId\": \"{{merchantId}}\",\n  \"amountMinor\": {{highRiskAmountMinor}},\n  \"currency\": \"{{currency}}\",\n  \"channel\": \"WEB\",\n  \"paymentType\": \"{{paymentType}}\",\n  \"deviceId\": null,\n  \"ipCountry\": \"{{highRiskCountry}}\",\n  \"outcome\": \"NOT_COMPLETED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{paymentsBaseUrl}}/payments", "host": ["{{paymentsBaseUrl}}"], "path": ["payments"] },
+            "description": "Should score FRAUD_SCORE_HIGH. Sends an approved notification at VALIDATED, then a failed one at NOT_COMPLETED."
+          }
+        },
+        {
+          "name": "Malformed body returns 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"outcome\": \"NOT_A_REAL_OUTCOME\" }",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{paymentsBaseUrl}}/payments", "host": ["{{paymentsBaseUrl}}"], "path": ["payments"] },
+            "description": "An unknown outcome is rejected before anything is sent to Kafka."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit",
+      "item": [
+        {
+          "name": "Payment timeline",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// The audit consumer batches for up to 500ms, so give it time to catch up.",
+                  "setTimeout(() => {}, 1500);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const events = pm.response.json();",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('payment has archived events', () => pm.expect(events).to.not.be.empty);",
+                  "pm.test('all events share one partition', () => {",
+                  "  pm.expect(new Set(events.map(e => e.partition)).size).to.eql(1);",
+                  "});",
+                  "pm.test('offsets increase', () => {",
+                  "  events.slice(1).forEach((e, i) => pm.expect(e.offset).to.be.above(events[i].offset));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{auditBaseUrl}}/audit/payments/{{paymentId}}",
+              "host": ["{{auditBaseUrl}}"],
+              "path": ["audit", "payments", "{{paymentId}}"]
+            },
+            "description": "One payment's events. Uses the paymentId saved by the last Create payment request."
+          }
+        },
+        {
+          "name": "Verify ordering",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "setTimeout(() => {}, 1500);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const report = pm.response.json();",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('no ordering violations', () => pm.expect(report.violationCount).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{auditBaseUrl}}/audit/verify", "host": ["{{auditBaseUrl}}"], "path": ["audit", "verify"] },
+            "description": "Checks every archived payment for one partition, increasing offsets and legal state transitions."
+          }
+        },
+        {
+          "name": "Audit consumer lag",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{auditBaseUrl}}/latency", "host": ["{{auditBaseUrl}}"], "path": ["latency"] },
+            "description": "Time from event creation to archive (p50/p95/p99), counted since the pod started or was last reset."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Load and latency",
+      "item": [
+        {
+          "name": "Run 4 fixed scenarios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const journeys = pm.response.json();",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('one journey per ending', () => {",
+                  "  pm.expect(journeys.map(j => j.outcome)).to.eql(['COMPLETED', 'NOT_AUTHORISED', 'INVALIDATED', 'NOT_COMPLETED']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{paymentsBaseUrl}}/scenarios", "host": ["{{paymentsBaseUrl}}"], "path": ["scenarios"] },
+            "description": "Runs one journey for each possible ending, with increasing fraud risk. No body needed."
+          }
+        },
+        {
+          "name": "Simulate journeys",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const summary = pm.response.json();",
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('no journeys unsent', () => pm.expect(summary.journeysUnsent).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{paymentsBaseUrl}}/simulate?count={{simulateCount}}&seed={{simulateSeed}}&ratePerSec={{simulateRatePerSec}}",
+              "host": ["{{paymentsBaseUrl}}"],
+              "path": ["simulate"],
+              "query": [
+                { "key": "count", "value": "{{simulateCount}}" },
+                { "key": "seed", "value": "{{simulateSeed}}" },
+                { "key": "ratePerSec", "value": "{{simulateRatePerSec}}" }
+              ]
+            },
+            "description": "Generates mock journeys at a steady rate and returns a summary when they finish."
+          }
+        },
+        {
+          "name": "Producer latency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{paymentsBaseUrl}}/latency", "host": ["{{paymentsBaseUrl}}"], "path": ["latency"] },
+            "description": "Time from creating an event to Kafka acknowledging it (p50/p95/p99)."
+          }
+        },
+        {
+          "name": "Reset producer latency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{paymentsBaseUrl}}/latency/reset", "host": ["{{paymentsBaseUrl}}"], "path": ["latency", "reset"] },
+            "description": "Clears samples, so a new measurement excludes slow first requests after startup."
+          }
+        }
+      ]
+    }
+  ]
+}

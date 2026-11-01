@@ -1,0 +1,129 @@
+# Three-broker KRaft cluster. Each pod is both broker and controller, which suits a local POC.
+# Names match the templates: pods kafka-0/1/2 and bootstrap address kafka-service:9092.
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+spec:
+  clusterIP: None
+  # Brokers must resolve each other before they are ready, or the controller quorum can never form.
+  publishNotReadyAddresses: true
+  selector:
+    app: kafka
+  ports:
+    - name: client
+      port: 9092
+    - name: controller
+      port: 9093
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+spec:
+  selector:
+    app: kafka
+  ports:
+    - name: client
+      port: 9092
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  serviceName: kafka-headless
+  replicas: 3
+  # Parallel: kafka-0 cannot become ready until a quorum exists, so ordered startup would deadlock.
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      # Stops Kubernetes injecting KAFKA_SERVICE_* variables, which the image would read as broker settings.
+      enableServiceLinks: false
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.7.1
+          command:
+            - bash
+            - -c
+            - |
+              export KAFKA_NODE_ID=${HOSTNAME##*-}
+              export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${HOSTNAME}.kafka-headless.default.svc.cluster.local:9092
+              exec /etc/confluent/docker/run
+          env:
+            - name: CLUSTER_ID
+              value: "q1Sh-9_ISia_zwGINzRvyQ"
+            - name: KAFKA_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "0@kafka-0.kafka-headless.default.svc.cluster.local:9093,1@kafka-1.kafka-headless.default.svc.cluster.local:9093,2@kafka-2.kafka-headless.default.svc.cluster.local:9093"
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://:9092,CONTROLLER://:9093"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
+            # A subdirectory, so a volume's own lost+found is not mistaken for a log directory.
+            - name: KAFKA_LOG_DIRS
+              value: "/var/lib/kafka/data/kafka-logs"
+            # Topics exist only through scripts/create-topics.sh, so a typo cannot create a weak one.
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "false"
+            - name: KAFKA_DEFAULT_REPLICATION_FACTOR
+              value: "3"
+            - name: KAFKA_MIN_INSYNC_REPLICAS
+              value: "2"
+            # Committed offsets need the same durability as the events they refer to.
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "3"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "3"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "2"
+            # Laptop tolerance, not production values. With the defaults (2s, 1s, 9s) CPU contention caused
+            # hundreds of controller elections. See "Issues Encountered" in payment_events_setup.md.
+            - name: KAFKA_CONTROLLER_QUORUM_FETCH_TIMEOUT_MS
+              value: "10000"
+            - name: KAFKA_CONTROLLER_QUORUM_ELECTION_TIMEOUT_MS
+              value: "5000"
+            - name: KAFKA_BROKER_SESSION_TIMEOUT_MS
+              value: "18000"
+            - name: KAFKA_HEAP_OPTS
+              value: "-Xms512m -Xmx512m"
+          ports:
+            - containerPort: 9092
+            - containerPort: 9093
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: 768Mi
+              cpu: 250m
+            limits:
+              # Includes room for the CLI tools, which run as extra JVMs inside this container when
+              # used through kubectl exec. At 1Gi a load test run this way got the broker OOM-killed.
+              memory: 1536Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/kafka/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi

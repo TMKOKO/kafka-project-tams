@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: payment-service
+  threads:
+    virtual:
+      enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        acks: all
+        retries: 2147483647
+        max.in.flight.requests.per.connection: 5
+        enable.idempotence: true
+        compression.type: lz4
+        linger.ms: 5
+        batch.size: 65536
+        delivery.timeout.ms: 30000
+        request.timeout.ms: 5000
+        # send() also blocks waiting for metadata. Keep that inside the same 30s stuck-payment window.
+        max.block.ms: 30000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

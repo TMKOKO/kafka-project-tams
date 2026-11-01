@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: notification-service
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service:9092}
+    listener:
+      type: batch
+      ack-mode: manual
+    consumer:
+      group-id: notification-sender-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        max.poll.records: 200
+        session.timeout.ms: 30000
+        heartbeat.interval.ms: 10000
+        auto.offset.reset: earliest
+        enable.auto.commit: false
+        max.poll.interval.ms: 120000
+        fetch.min.bytes: 1024
+        fetch.max.wait.ms: 100
+        max.partition.fetch.bytes: 1048576
+        partition.assignment.strategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        acks: all
+        retries: 2147483647
+        max.in.flight.requests.per.connection: 5
+        enable.idempotence: true
+        compression.type: lz4
+        linger.ms: 20
+        batch.size: 65536
+        delivery.timeout.ms: 60000
+        request.timeout.ms: 10000
+
+notification:
+  mock:
+    failure-rate: ${NOTIFICATION_FAILURE_RATE:0.02}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
