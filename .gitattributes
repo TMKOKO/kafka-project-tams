@@ -1,0 +1,2 @@
+# Keep LF everywhere, so shell scripts still run in bash after a clone on Windows.
+* text=auto eol=lf
